@@ -6,6 +6,15 @@ import streamlit as st
 from ultralytics import YOLO
 from pykalman import KalmanFilter
 import tempfile
+import sys
+import types
+
+# ✅ Patch: Dummy DFLoss to bypass model loading error
+dummy_loss_module = types.ModuleType("ultralytics.utils.loss")
+class DFLoss:
+    def __init__(self, *args, **kwargs): pass
+dummy_loss_module.DFLoss = DFLoss
+sys.modules["ultralytics.utils.loss"] = dummy_loss_module
 
 # ✅ Streamlit UI
 st.set_page_config(page_title="Glaucoma Detection", layout="centered")
